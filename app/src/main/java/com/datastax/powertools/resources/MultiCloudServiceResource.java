@@ -89,7 +89,7 @@ public class MultiCloudServiceResource {
                 "--stack-name", deploymentName,
                 "--disable-rollback",
                 "--capabilities", "CAPABILITY_IAM",
-                "--template-body",  "file:///dse-multi-cloud-demo/iaas/aws/datacenter.template",
+                "--template-body",  "file:///multi-cloud-service/iaas/aws/datacenter.template",
                 "--parameters"));
 
         for (String arg : paramString) {
@@ -232,7 +232,7 @@ public class MultiCloudServiceResource {
         ProcessBuilder pb = new ProcessBuilder(
                 "gcloud", "deployment-manager", "deployments", "create",
                 deploymentName,
-                "--template", "/dse-multi-cloud-demo/iaas/gcp/datastax.py",
+                "--template", "/multi-cloud-service/iaas/gcp/datastax.py",
                 "--properties", paramsAndLabelsMap.get("params"),
                 "--labels", paramsAndLabelsMap.get("labels")
         );
@@ -337,7 +337,7 @@ public class MultiCloudServiceResource {
                 "deployment",
                 "create",
                 "--resource-group", deploymentName,
-                "--template-file", "/dse-multi-cloud-demo/iaas/azure/template-vnet.json",
+                "--template-file", "/multi-cloud-service/iaas/azure/template-vnet.json",
                 "--verbose"
         );
 
@@ -359,7 +359,7 @@ public class MultiCloudServiceResource {
                 "deployment",
                 "create",
                 "--resource-group", deploymentName,
-                "--template-file", "/dse-multi-cloud-demo/iaas/azure/nodes.json",
+                "--template-file", "/multi-cloud-service/iaas/azure/nodes.json",
                 "--parameters", paramString,
                 "--verbose");
 
@@ -599,7 +599,7 @@ public class MultiCloudServiceResource {
                 "-lcm", lcmIp,
                 "-u", "ubuntu",
                 // TODO: this needs to be dynamic at some point
-                "-k", "/dse-multi-cloud-demo/config/assethub-2019",
+                "-k", "/multi-cloud-service/config/assethub-2019",
                 "-n", clusterName,
                 "-v", dse_version,
                 "-t", num_tokens,
