@@ -44,6 +44,10 @@ username = args["user"]
 datastax_version = args["version"]
 vnodes = int(args["tokens"])
 
+jvmOptionsParam = "jvm-options"
+if datastax_version.startswith("6.8"):
+    jvmOptionsParam = "jvm-server-options"
+
 repo_user = os.environ.get('academy_user').strip()
 repo_pass = os.environ.get('academy_pass').strip()
 download_token = os.environ.get('academy_token').strip()
@@ -125,24 +129,24 @@ machine_credential_id = machine_credential_response['id']
 configProfile = {
     "name": cluster_name,
     "datastax-version": datastax_version,
-    'json': {
-        'cassandra-yaml' : {
-            'num_tokens' : vnodes,
-            'authenticator' : 'AllowAllAuthenticator',
-            'authorizer' : 'AllowAllAuthorizer',
+    "json": {
+        "cassandra-yaml" : {
+            "num_tokens" : vnodes,
+            "authenticator" : "AllowAllAuthenticator",
+            "authorizer" : "AllowAllAuthorizer",
 #           "10-write-prom-conf" : {
 #               "enabled" : True
 #           }
 #           ,
-#           'client_encryption_options' : { 'enabled' : True },
-#           'server_encryption_options' : { 'internode_encryption' : 'all',
-#               'require_client_auth' : False,
-#		'require_endpoint_verification' : False
+#           "client_encryption_options" : { "enabled" : True },
+#           "server_encryption_options" : { "internode_encryption" : "all",
+#               "require_client_auth" : False,
+#		"require_endpoint_verification" : False
 #           }
         },
 #CLOSE cassandra.yaml
     },
-    "comment": 'LCM provisioned %s' % cluster_name
+    "comment": "LCM provisioned %s" % cluster_name
 }
 
 
@@ -153,30 +157,32 @@ jvmOptions ={
 }
 
 if (vnodes == 1):
-  configProfile['json']['jvm-options'] = jvmOptions
+  configProfile["json"][jvmOptionsParam] = jvmOptions
+
+print "configProfile: ", configProfile
 
 cluster_profile_response = do_post("config_profiles/", configProfile)
 cluster_profile_id = cluster_profile_response['id']
 
 configProfileNoJava = {"name": cluster_name+"-no-java",
      "datastax-version": datastax_version,
-     'json': {'cassandra-yaml' : {
-         'num_tokens' : vnodes,
-         'authenticator' : 'AllowAllAuthenticator',
-         'authorizer' : 'AllowAllAuthorizer'
+     "json": {"cassandra-yaml" : {
+         "num_tokens" : vnodes,
+         "authenticator" : "AllowAllAuthenticator",
+         "authorizer" : "AllowAllAuthorizer"
 #,
-#         'client_encryption_options' : { 'enabled' : True },
-#         'server_encryption_options' : { 'internode_encryption' : 'all',
-#             'require_client_auth' : False,
-#             'require_endpoint_verification' : False
+#         "client_encryption_options" : { "enabled" : True },
+#         "server_encryption_options" : { "internode_encryption" : "all",
+#             "require_client_auth" : False,
+#             "require_endpoint_verification" : False
 #             }
          },
          "java-setup": {"manage-java": False}
          },
-     "comment": 'LCM provisioned %s' % cluster_name}
+     "comment": "LCM provisioned %s" % cluster_name}
 
 if (vnodes == 1) :
-  configProfileNoJava['json']['jvm-options'] = jvmOptions
+  configProfileNoJava["json"][jvmOptionsParam] = jvmOptions
 
 cluster_profile_response_no_java = do_post("config_profiles/", configProfileNoJava)
 cluster_profile_id_no_java = cluster_profile_response_no_java['id']
