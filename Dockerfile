@@ -55,18 +55,18 @@ RUN cat /config/gcloud/gcloud-service-key.json | jq ".project_id" | xargs gcloud
 RUN cat config/azure/creds.txt | awk '{system( "az login --service-principal -u " $2 " -p " $3 " --tenant " $1 )}'
 #echo az login --service-principal -u $AZ_APP_ID -p $AZ_KEY --tenant $AZ_TENNANT
 
-#RUN git clone https://github.com/phact/dse-multi-cloud-demo.git
-COPY ./ /dse-multi-cloud-demo/
+#RUN git clone https://github.com/jeromatron/multi-cloud-service.git
+COPY ./ /multi-cloud-service/
 
-RUN chmod 600 /dse-multi-cloud-demo/config/assethub-2019
+RUN chmod 600 /multi-cloud-service/config/assethub-2019
 
 # TODO: use the precompiled version from the copy ^^
-RUN cd dse-multi-cloud-demo/app && mvn clean package
+RUN cd multi-cloud-service/app && mvn clean package
 
 # lcm script dependencies
-RUN pip install -r dse-multi-cloud-demo/requirements.txt
+RUN pip install -r multi-cloud-service/requirements.txt
 
-CMD . config/academy && cd dse-multi-cloud-demo/app && java -jar target/multi-cloud-service.jar server conf/multi-cloud-service-conf.yaml
-#RUN cd /dse-multi-cloud-demo/iaas && ./deploy_aws.sh
-#RUN /dse-multi-cloud-demo/iaas/deploy_azure.sh
-#RUN /dse-multi-cloud-demo/iaas/deploy_gcp.sh
+CMD . config/academy && cd multi-cloud-service/app && java -jar target/multi-cloud-service.jar server conf/multi-cloud-service-conf.yaml
+#RUN cd /multi-cloud-service/iaas && ./deploy_aws.sh
+#RUN /multi-cloud-service/iaas/deploy_azure.sh
+#RUN /multi-cloud-service/iaas/deploy_gcp.sh
